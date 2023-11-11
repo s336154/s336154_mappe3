@@ -18,6 +18,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -27,12 +28,13 @@ import java.util.List;
 
     public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
-
         private GoogleMap googleMap;
     private EditText placeNameEditText;
     private DatabaseHelper dbHelper;
     private List<Place> savedPlaces;
     private ArrayAdapter<Place> placesAdapter;
+
+        private Marker currentMarker; // To keep track of the current marker
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,8 @@ import java.util.List;
         EditText placeNameEditText = findViewById(R.id.placeName);
         Button saveButton = findViewById(R.id.saveButton);
         Button viewSavedButton = findViewById(R.id.viewSavedButton);
+        Button zoomINButton = findViewById(R.id.zoomINButton);
+        Button zoomOUTButton = findViewById(R.id.zoomOUTButton);
 
         savedPlaces = new ArrayList<>();
         placesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, savedPlaces);
@@ -74,6 +78,16 @@ import java.util.List;
                     } else {
                         Toast.makeText(MainActivity.this, "Please enter a place name", Toast.LENGTH_SHORT).show();
                     }
+
+                    // Remove the current marker if it exists
+                    if (currentMarker != null) {
+                        currentMarker.remove();
+                    }
+
+                    // Add a new marker for the selected place
+                    currentMarker = googleMap.addMarker(new MarkerOptions()
+                            .position(selectedPlace)
+                            .title(placeName));
                 }
             }
         });
@@ -86,17 +100,44 @@ import java.util.List;
                 startActivity(intent);
             }
         });
-    }
-    @Override
-    public void onMapReady(GoogleMap map) {
-        googleMap = map;
-        googleMap.setOnMapClickListener((GoogleMap.OnMapClickListener) this);
-    }
 
 
-    public void onMapClick(LatLng latLng) {
-        // Add a marker at the clicked location
-        googleMap.addMarker(new MarkerOptions().position(latLng).title("Selected Place"));
     }
+
+        public void zoomIn(View view) {
+            if (googleMap != null) {
+                googleMap.animateCamera(CameraUpdateFactory.zoomIn());
+            }
+        }
+
+        public void zoomOut(View view) {
+            if (googleMap != null) {
+                googleMap.animateCamera(CameraUpdateFactory.zoomOut());
+            }
+        }
+        @Override
+        public void onMapReady(GoogleMap map) {
+            googleMap = map;
+            LatLng oslo = new LatLng(59.9139, 10.7522);
+
+            // Set the camera position to Oslo with a zoom level (you can adjust the zoom level as needed)
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(oslo, 15)); // The number 15 represents the zoom level
+
+          //  googleMap.addMarker(new MarkerOptions().position(oslo).title("Marker in Oslo"));
+            googleMap.setOnMapClickListener(this);
+        }
+
+        @Override
+        public void onMapClick(LatLng latLng) {
+            // Remove the current marker when the map is clicked
+            if (currentMarker != null) {
+                currentMarker.remove();
+            }
+
+            // Add a new marker at the clicked location
+            currentMarker = googleMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title("Selected Place"));
+        }
 }
 

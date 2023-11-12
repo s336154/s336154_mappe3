@@ -1,24 +1,60 @@
 package com.example.s336154_mappe3;
 
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Place implements Parcelable {
 
-    private String name;
+
+    private int id;
+    private String place;
+    private String comment;
     private String address;
+
     private double latitude;
     private double longitude;
 
-    public Place(String name, double latitude, double longitude) {
-        this.name = name;
+
+
+    public Place(String place,String comment, String address, double latitude, double longitude) {
+
+        this.place = place;
+        this.comment=comment;
+        this.address=address;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public String getName() {
-        return name;
+
+    public int getId() {
+        return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
 
     public double getLatitude() {
         return latitude;
@@ -28,15 +64,10 @@ public class Place implements Parcelable {
         return longitude;
     }
 
-    public String getDescription() {
-        return description;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    private String description;
 
     public String getAddress() {
         return address;
@@ -49,7 +80,9 @@ public class Place implements Parcelable {
     // Implement Parcelable methods for passing data to SavedPlacesActivity
 
     protected Place(Parcel in) {
-        name = in.readString();
+        place = in.readString();
+        comment = in.readString();
+        address = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
     }
@@ -73,14 +106,16 @@ public class Place implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
+        dest.writeString(place);
+        dest.writeString(comment);
+        dest.writeString(address);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
     }
 
     @Override
     public String toString() {
-        return name;
+        return place;
     }
 }
 

@@ -14,17 +14,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/placeName" />
+        app:layout_constraintBottom_toTopOf="@+id/zoomINButton" />
 
-    <EditText
-        android:id="@+id/placeName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Enter place name"
-        app:layout_constraintTop_toBottomOf="@+id/mapView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp" />
+
 
     <!-- Create a horizontal guideline to position the buttons -->
     <androidx.constraintlayout.widget.Guideline
@@ -40,7 +32,7 @@
         android:layout_height="wrap_content"
         android:text="Zoom In"
         android:onClick="zoomIn"
-        app:layout_constraintTop_toBottomOf="@+id/placeName"
+        app:layout_constraintTop_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/zoomOUTButton"
         app:layout_constraintBottom_toTopOf="@+id/saveButton"
@@ -53,7 +45,7 @@
         android:layout_height="wrap_content"
         android:text="Zoom Out"
         android:onClick="zoomOut"
-        app:layout_constraintTop_toBottomOf="@+id/placeName"
+        app:layout_constraintTop_toBottomOf="@+id/mapView"
         app:layout_constraintStart_toEndOf="@id/zoomINButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/saveButton"

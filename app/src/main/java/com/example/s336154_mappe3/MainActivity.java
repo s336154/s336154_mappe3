@@ -3,6 +3,8 @@ package com.example.s336154_mappe3;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,15 +44,11 @@ import java.util.List;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new DatabaseHelper(this);
-
         MapView mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
 
-
-        EditText placeNameEditText = findViewById(R.id.placeName);
         Button saveButton = findViewById(R.id.saveButton);
         Button viewSavedButton = findViewById(R.id.viewSavedButton);
         Button zoomINButton = findViewById(R.id.zoomINButton);
@@ -58,26 +57,28 @@ import java.util.List;
         savedPlaces = new ArrayList<>();
         placesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, savedPlaces);
 
+
+
+        Intent IntentPlacesAct = new Intent(this, SavedPlacesActivity.class);
+        Intent IntentSaveAct = new Intent(getApplicationContext(), SaveActivity.class);
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (googleMap != null) {
                     LatLng selectedPlace = googleMap.getCameraPosition().target;
-                    String placeName = placeNameEditText.getText().toString().trim();
+                    if(googleMap!=null) {
+                        LatLng oslo = new LatLng(59.9139, 10.7522);
+                        String address = getAddressFromLatLng(oslo);
 
-                    if (!placeName.isEmpty()) {
-                        long result = dbHelper.insertPlace(placeName, selectedPlace.latitude, selectedPlace.longitude);
 
-                        if (result != -1) {
-                            Toast.makeText(MainActivity.this, "Place saved to database", Toast.LENGTH_SHORT).show();
-                            savedPlaces.add(new Place(placeName, selectedPlace.latitude, selectedPlace.longitude));
-                            placesAdapter.notifyDataSetChanged();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Failed to save place", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(MainActivity.this, "Please enter a place name", Toast.LENGTH_SHORT).show();
+               //         IntentSaveAct.putParcelableArrayListExtra("addressList", (ArrayList<? extends Parcelable>) savedPlaces);
+                        IntentSaveAct.putExtra("longitude", oslo.longitude);
+                        IntentSaveAct.putExtra("latitude", oslo.latitude);
+                        IntentSaveAct.putExtra("address", address);
+                        startActivity(IntentSaveAct);
                     }
+
 
                     // Remove the current marker if it exists
                     if (currentMarker != null) {
@@ -87,7 +88,7 @@ import java.util.List;
                     // Add a new marker for the selected place
                     currentMarker = googleMap.addMarker(new MarkerOptions()
                             .position(selectedPlace)
-                            .title(placeName));
+                            .title(""));
                 }
             }
         });
@@ -103,6 +104,28 @@ import java.util.List;
 
 
     }
+
+        private String getAddressFromLatLng(LatLng latLng) {
+            // Use Geocoder to obtain an address from LatLng
+            Geocoder geocoder = new Geocoder(this);
+            ArrayList<String> addressList = new ArrayList<>(); // Initialize the ArrayList
+
+            try {
+                List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                if (addresses != null && addresses.size() > 0) {
+                    Address address = addresses.get(0);
+                    String addressStr = address.getAddressLine(0);
+
+                    // Add other address components if needed
+                    return addressStr;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
 
         public void zoomIn(View view) {
             if (googleMap != null) {

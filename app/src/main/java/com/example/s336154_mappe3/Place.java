@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class Place implements Parcelable {
 
     private String name;
+    private String address;
     private double latitude;
     private double longitude;
 
@@ -25,6 +26,24 @@ public class Place implements Parcelable {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    private String description;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     // Implement Parcelable methods for passing data to SavedPlacesActivity

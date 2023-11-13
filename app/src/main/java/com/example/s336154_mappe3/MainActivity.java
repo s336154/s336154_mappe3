@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+
 // MainActivity.java
 
     public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
@@ -36,8 +39,8 @@ import java.util.List;
     private DatabaseHelper dbHelper;
     private List<Place> savedPlaces;
     private ArrayAdapter<Place> placesAdapter;
-
-        private Marker currentMarker; // To keep track of the current marker
+    private Marker currentMarker; // To keep track of the current marker
+        public String commentSaved, addressSaved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,14 @@ import java.util.List;
         savedPlaces = new ArrayList<>();
         placesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, savedPlaces);
 
+        // Get the intent that started this activity
+        Intent intent = getIntent();
 
+        // Check if extras are available
+        if (intent != null && intent.getExtras() != null) {
+            addressSaved = intent.getExtras().getString("address", null);
+            commentSaved = intent.getExtras().getString("comment", null);
+        }
 
         Intent IntentPlacesAct = new Intent(this, SavedPlacesActivity.class);
         Intent IntentSaveAct = new Intent(getApplicationContext(), SaveActivity.class);
@@ -102,8 +112,59 @@ import java.util.List;
             }
         });
 
+        addMarkerFromAddress(addressSaved);
+
+        /*
+        currentMarker = googleMap.addMarker(new MarkerOptions()
+                .position(selectedPlace)
+                .title(commentSaved)); // Set the title using commentSaved
+
+        // Add a marker based on the addressSaved
+        addMarkerFromAddress(addressSaved);
+
+         */
+
 
     }
+
+       private void addMarkerFromAddress(String address) {
+            if (googleMap != null) {
+                Geocoder geocoder = new Geocoder(this);
+                List<Address> addresses;
+
+                try {
+                    addresses = geocoder.getFromLocationName(address, 1);
+                    if (!addresses.isEmpty()) {
+                        Address location = addresses.get(0);
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+
+                        // Create a LatLng from the latitude and longitude
+                        LatLng latLng = new LatLng(latitude, longitude);
+
+                        // Add a marker on the map with the title from commentSaved
+                        Marker marker = googleMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title(commentSaved)); // Set the title using commentSaved
+                    } else {
+                        // Handle the case where the address couldn't be resolved
+                        Toast.makeText(this, "Address not found", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+                // Call this method when you want to add a marker for a specific address
+   /*     private void displayMarkerForAddress(String address) {
+            addMarkerFromAddress(address);
+        }
+
+    */
+
+
 
         private String getAddressFromLatLng(LatLng latLng) {
             // Use Geocoder to obtain an address from LatLng

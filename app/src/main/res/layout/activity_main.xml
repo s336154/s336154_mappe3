@@ -60,16 +60,44 @@
         app:layout_constraintTop_toBottomOf="@id/zoomINButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/viewSavedButton"
+        app:layout_constraintBottom_toTopOf="@+id/markAllButton"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp" />
+
+
+    <Button
+        android:id="@+id/markAllButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Marker Lagret"
+        android:onClick="markAll"
+        app:layout_constraintTop_toBottomOf="@+id/saveButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/unMarkAllButton"
+        app:layout_constraintBottom_toTopOf="@+id/viewSavedButton"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
+
+    <Button
+        android:id="@+id/unMarkAllButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Fjern Marker"
+        android:onClick="unMarkAll"
+        app:layout_constraintTop_toBottomOf="@+id/saveButton"
+        app:layout_constraintStart_toEndOf="@id/markAllButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/viewSavedButton"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
+
 
     <Button
         android:id="@+id/viewSavedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Saved Places"
-        app:layout_constraintTop_toBottomOf="@+id/saveButton"
+        app:layout_constraintTop_toBottomOf="@+id/markAllButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

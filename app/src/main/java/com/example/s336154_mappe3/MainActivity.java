@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button viewSavedButton = findViewById(R.id.viewSavedButton);
         Button zoomINButton = findViewById(R.id.zoomINButton);
         Button zoomOUTButton = findViewById(R.id.zoomOUTButton);
+        Button markAllButton = findViewById(R.id.markAllButton);
+        Button unMarkAllButton = findViewById(R.id.unMarkAllButton);
 
         savedPlaces = new ArrayList<>();
         placesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, savedPlaces);
@@ -119,6 +121,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             googleMap.animateCamera(CameraUpdateFactory.zoomOut());
         }
     }
+
+
+    public void markAll(View view) {
+        if (googleMap != null) {
+            List<Place> savedPlaces = dbHelper.getSavedPlaces();
+
+            // Check if there are any saved places
+            if (!savedPlaces.isEmpty()) {
+                for (Place place : savedPlaces) {
+                    LatLng latLng = new LatLng(place.getLatitude(), place.getLongitude());
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(place.getComment()));
+                }
+            } else {
+                Toast.makeText(this, "No saved places to mark", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void unMarkAll(View view) {
+        if (googleMap != null) {
+            googleMap.clear();
+        }
+    }
+
 
     @Override
     public void onMapReady(GoogleMap map) {

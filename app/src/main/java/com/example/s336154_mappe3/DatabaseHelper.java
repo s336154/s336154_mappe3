@@ -11,7 +11,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "places.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private static final String TABLE_PLACES = "places";
     private static final String COLUMN_ID = "id";
@@ -52,6 +52,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_LATITUDE, latitude);
         values.put(COLUMN_LONGITUDE, longitude);
         return db.insert(TABLE_PLACES, null, values);
+    }
+
+    public long addPlace(String address, String comment) {
+        // Replace the placeholders with actual values
+        String place = "Your Place Name";  // You need to specify a place name here
+        double latitude = 0.0; // Set the latitude of the place
+        double longitude = 0.0; // Set the longitude of the place
+
+        // Insert the place into the database
+        return insertPlace(place, comment, address, latitude, longitude);
     }
 
     public List<Place> getSavedPlaces() {
